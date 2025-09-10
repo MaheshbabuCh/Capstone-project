@@ -8,4 +8,5 @@ public class Category extends BaseAudit{
     private String name;
     private String description;
     private List<Product> products;
+
 }
