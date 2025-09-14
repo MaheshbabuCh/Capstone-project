@@ -1,6 +1,6 @@
 package com.example.capstoneproject.services;
 
-import com.example.capstoneproject.dtos.FakeStoreProductResponseDto;
+import com.example.capstoneproject.dtos.FakeStoreProductDto;
 import com.example.capstoneproject.models.Category;
 import com.example.capstoneproject.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Objects;
 
 @Service
 public class ProductServiceImplementation implements ProductService {
@@ -24,7 +26,7 @@ public class ProductServiceImplementation implements ProductService {
     public Product getProductById(int id) {
 
         RestTemplate restTemplate = restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductResponseDto> fakeStoreProductResponseDto =  restTemplate.getForEntity("https://fakestoreapi.com/products/" + id, FakeStoreProductResponseDto.class);
+        ResponseEntity<FakeStoreProductDto> fakeStoreProductResponseDto =  restTemplate.getForEntity("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
 
         if (fakeStoreProductResponseDto.getStatusCode() != HttpStatus.OK || fakeStoreProductResponseDto.getBody() == null) {
             return null;
@@ -33,10 +35,21 @@ public class ProductServiceImplementation implements ProductService {
         return getProduct(fakeStoreProductResponseDto);
     }
 
-    private static Product getProduct(ResponseEntity<FakeStoreProductResponseDto> fakeStoreProductResponseDto) {
+    @Override
+    public ResponseEntity<Product> addProduct(FakeStoreProductDto requestBody) {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate.postForEntity("https://fakestoreapi.com/products", requestBody, FakeStoreProductDto.class);
+
+        Product product = getProduct(responseEntity);
+
+        return ResponseEntity.status(responseEntity.getStatusCode()).body(product);
+
+    }
+
+    private static Product getProduct(ResponseEntity<FakeStoreProductDto> fakeStoreProductResponseDto) {
         Product product = new Product();
 
-        product.setId(fakeStoreProductResponseDto.getBody().getId());
+        product.setId(Objects.requireNonNull(fakeStoreProductResponseDto.getBody()).getId());
         product.setTitle(fakeStoreProductResponseDto.getBody().getTitle());
         Category category = new Category();
         category.setName(fakeStoreProductResponseDto.getBody().getCategory());

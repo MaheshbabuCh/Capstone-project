@@ -5,20 +5,20 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FakeStoreProductResponseDto {
+public class FakeStoreProductDto {
 
-    private int id;
+    private Integer id;
     private String title;
-    private float price;
+    private Float price;
     private String description;
     private String image;
     private String category;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -30,11 +30,11 @@ public class FakeStoreProductResponseDto {
         this.title = title;
     }
 
-    public float getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 

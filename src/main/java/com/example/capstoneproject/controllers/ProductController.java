@@ -1,5 +1,6 @@
 package com.example.capstoneproject.controllers;
 
+import com.example.capstoneproject.dtos.FakeStoreProductDto;
 import com.example.capstoneproject.dtos.ProductResponseDto;
 import com.example.capstoneproject.models.Product;
 import com.example.capstoneproject.services.ProductService;
@@ -9,11 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class ProductController {
 
     ProductService productService;
+
 
     @Autowired
     public ProductController(ProductService productService) {
@@ -40,5 +44,30 @@ public class ProductController {
        return ResponseEntity.ok(productResponseDto);
 
        // return productResponseDto;
+    }
+
+    @PostMapping("/products")
+    public ResponseEntity<?> addProduct(@RequestBody FakeStoreProductDto requestBody){
+
+        return productService.addProduct(requestBody);
+
+        /* ResponseEntity<Product> responseProductEntity = productService.addProduct(requestBody);
+        ProductResponseDto productResponseDto = new ProductResponseDto();
+
+        if (responseProductEntity.getStatusCode().is2xxSuccessful() && responseProductEntity.getBody() != null) {
+            productResponseDto.setId(responseProductEntity.getBody().getId());
+            productResponseDto.setDescription(responseProductEntity.getBody().getDescription());
+            productResponseDto.setTitle(responseProductEntity.getBody().getTitle());
+            productResponseDto.setPrice(responseProductEntity.getBody().getPrice());
+            productResponseDto.setImageUrl(responseProductEntity.getBody().getImageUrl());
+            productResponseDto.setCategory(responseProductEntity.getBody().getCategory().getName());
+            productResponseDto.setMessage("Product added successfully");
+
+            return ResponseEntity.ok(productResponseDto);
+        }else {
+            productResponseDto.setMessage("Failed to add product");
+            productResponseDto.setErrorCode(responseProductEntity.getStatusCode().toString());
+            return ResponseEntity.status(responseProductEntity.getStatusCode()).body(productResponseDto);
+        } */
     }
 }
