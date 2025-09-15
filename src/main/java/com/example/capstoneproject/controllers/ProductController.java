@@ -1,5 +1,6 @@
 package com.example.capstoneproject.controllers;
 
+import com.example.capstoneproject.dtos.ExternalApiResult;
 import com.example.capstoneproject.dtos.FakeStoreProductDto;
 import com.example.capstoneproject.dtos.ProductResponseDto;
 import com.example.capstoneproject.models.Product;
@@ -8,10 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Controller
 public class ProductController {
@@ -69,5 +69,15 @@ public class ProductController {
             productResponseDto.setErrorCode(responseProductEntity.getStatusCode().toString());
             return ResponseEntity.status(responseProductEntity.getStatusCode()).body(productResponseDto);
         } */
+    }
+
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<ExternalApiResult<?>> deleteProductById(@PathVariable int id){
+       // Map<String, String> uriVariables = Map.of("id", String.valueOf(id), "isDeleted", "true");
+
+        ExternalApiResult<?> result = productService.deleteProductById(id);
+
+        return ResponseEntity.status(result.getStatus()).body(result);
+
     }
 }

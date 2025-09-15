@@ -1,5 +1,6 @@
 package com.example.capstoneproject.services;
 
+import com.example.capstoneproject.dtos.ExternalApiResult;
 import com.example.capstoneproject.dtos.FakeStoreProductDto;
 import com.example.capstoneproject.models.Category;
 import com.example.capstoneproject.models.Product;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -44,6 +46,19 @@ public class ProductServiceImplementation implements ProductService {
 
         return ResponseEntity.status(responseEntity.getStatusCode()).body(product);
 
+    }
+
+    @Override
+    public ExternalApiResult<Void> deleteProductById(int id) {
+
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        ResponseEntity<Void> response = restTemplate.exchange(
+                "https://fakestoreapi.com/products/" + id,
+                org.springframework.http.HttpMethod.DELETE,
+                null,
+                Void.class);
+
+        return new ExternalApiResult<>(response.getStatusCode(), "Delete operation completed", null);
     }
 
     private static Product getProduct(ResponseEntity<FakeStoreProductDto> fakeStoreProductResponseDto) {
