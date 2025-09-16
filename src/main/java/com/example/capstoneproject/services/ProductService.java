@@ -2,6 +2,7 @@ package com.example.capstoneproject.services;
 
 import com.example.capstoneproject.dtos.ExternalApiResult;
 import com.example.capstoneproject.client.FakeStoreProductResponseDto;
+import com.example.capstoneproject.dtos.ProductRequestdto;
 import com.example.capstoneproject.models.Product;
 import org.springframework.http.ResponseEntity;
 
@@ -15,5 +16,7 @@ public interface ProductService {
 
      ExternalApiResult<?> deleteProductById(int id);
 
-    ExternalApiResult<List<Product>> getAllProducts();
+     ExternalApiResult<List<Product>> getAllProducts();
+
+     ExternalApiResult<Product> updateProduct(int id, ProductRequestdto productRequestdto);
 }

@@ -2,7 +2,9 @@ package com.example.capstoneproject.controllers;
 
 import com.example.capstoneproject.dtos.ExternalApiResult;
 import com.example.capstoneproject.client.FakeStoreProductResponseDto;
+import com.example.capstoneproject.dtos.ProductRequestdto;
 import com.example.capstoneproject.dtos.ProductResponseDto;
+import com.example.capstoneproject.mappers.ProductMapper;
 import com.example.capstoneproject.models.Product;
 import com.example.capstoneproject.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,14 @@ import java.util.List;
 @Controller
 public class ProductController {
 
+    private final ProductMapper productMapper;
     ProductService productService;
 
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ProductMapper productMapper) {
         this.productService = productService;
+        this.productMapper = productMapper;
     }
 
     @GetMapping("/products/{id}")
@@ -92,22 +96,30 @@ public class ProductController {
         }
 
             List<Product> products = externalApiResult.getBody();
-
             List<ProductResponseDto> productResponseDtos = new ArrayList<>();
 
             for (Product product : products) {
-                ProductResponseDto dto = new ProductResponseDto();
-                dto.setId(product.getId());
+                ProductResponseDto dto = productMapper.toProductResponseDtoFromProduct(product);
+                /*dto.setId(product.getId());
                 dto.setTitle(product.getTitle());
                 dto.setDescription(product.getDescription());
                 dto.setPrice(product.getPrice());
                 dto.setImageUrl(product.getImageUrl());
-                dto.setCategory(product.getCategory().getName());
-
+                dto.setCategory(product.getCategory().getName());*/
                 productResponseDtos.add(dto);
             }
-
             return ResponseEntity.status(externalApiResult.getStatus()).body(productResponseDtos);
+    }
+
+    @PutMapping("/products/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable int id, @RequestBody ProductRequestdto productRequestdto) {
+
+        ExternalApiResult<Product> externalApiResult =  productService.updateProduct(id, productRequestdto);
+        if(externalApiResult.getStatus() != HttpStatus.OK || externalApiResult.getBody() == null) {
+            return ResponseEntity.status(externalApiResult.getStatus()).body(externalApiResult.getBody());
+        }
+        ProductResponseDto responseDto =  productMapper.toProductResponseDtoFromProduct(externalApiResult.getBody());
+        return ResponseEntity.status(externalApiResult.getStatus()).body(responseDto);
 
     }
 

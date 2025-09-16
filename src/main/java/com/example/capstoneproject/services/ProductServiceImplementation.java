@@ -2,6 +2,7 @@ package com.example.capstoneproject.services;
 
 import com.example.capstoneproject.dtos.ExternalApiResult;
 import com.example.capstoneproject.client.FakeStoreProductResponseDto;
+import com.example.capstoneproject.dtos.ProductRequestdto;
 import com.example.capstoneproject.mappers.ProductMapper;
 import com.example.capstoneproject.models.Category;
 import com.example.capstoneproject.models.Product;
@@ -89,17 +90,58 @@ public class ProductServiceImplementation implements ProductService {
         return new ExternalApiResult<>(responseEntity.getStatusCode(), "No products are available", null);
     }
 
+    @Override
+    public ExternalApiResult<Product> updateProduct(int id, ProductRequestdto productRequestdto) {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        String url = "https://fakestoreapi.com/products/" + id;
+        ResponseEntity<FakeStoreProductResponseDto> responseEntity = restTemplate.exchange(
+                url,
+                org.springframework.http.HttpMethod.PUT,
+                new org.springframework.http.HttpEntity<>(productMapper.toFakeStoreProductRequestDto(productRequestdto)),
+                FakeStoreProductResponseDto.class
+        );
+        if (responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
+            Product product = getProduct(responseEntity);
+            return new ExternalApiResult<>(responseEntity.getStatusCode(), "Product updated successfully", product);
+        }
+        return new ExternalApiResult<>(responseEntity.getStatusCode(), "Unable to update product", null);
+    }
+
     private static Product getProduct(ResponseEntity<FakeStoreProductResponseDto> fakeStoreProductResponseDto) {
         Product product = new Product();
 
-        product.setId(Objects.requireNonNull(fakeStoreProductResponseDto.getBody()).getId());
+        /*product.setId(Objects.requireNonNull(fakeStoreProductResponseDto.getBody()).getId());
         product.setTitle(fakeStoreProductResponseDto.getBody().getTitle());
         Category category = new Category();
         category.setName(fakeStoreProductResponseDto.getBody().getCategory());
         product.setCategory(category);
         product.setPrice(fakeStoreProductResponseDto.getBody().getPrice());
         product.setDescription(fakeStoreProductResponseDto.getBody().getDescription());
-        product.setImageUrl(fakeStoreProductResponseDto.getBody().getImage());
+        product.setImageUrl(fakeStoreProductResponseDto.getBody().getImage());*/
+
+        FakeStoreProductResponseDto body = fakeStoreProductResponseDto.getBody();
+        if (body != null) {
+            if (body.getId() != null) {
+                product.setId(body.getId());
+            }
+            if (body.getTitle() != null) {
+                product.setTitle(body.getTitle());
+            }
+            if (body.getCategory() != null) {
+                Category category = new Category();
+                category.setName(body.getCategory());
+                product.setCategory(category);
+            }
+            if (body.getPrice() != null) {
+                product.setPrice(body.getPrice());
+            }
+            if (body.getDescription() != null) {
+                product.setDescription(body.getDescription());
+            }
+            if (body.getImage() != null) {
+                product.setImageUrl(body.getImage());
+            }
+        }
         return product;
     }
 }
