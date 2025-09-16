@@ -1,11 +1,11 @@
-package com.example.capstoneproject.dtos;
+package com.example.capstoneproject.client;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class FakeStoreProductDto {
+public class FakeStoreProductResponseDto {
 
     private Integer id;
     private String title;

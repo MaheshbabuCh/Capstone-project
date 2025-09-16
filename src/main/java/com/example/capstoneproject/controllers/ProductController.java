@@ -1,7 +1,7 @@
 package com.example.capstoneproject.controllers;
 
 import com.example.capstoneproject.dtos.ExternalApiResult;
-import com.example.capstoneproject.dtos.FakeStoreProductDto;
+import com.example.capstoneproject.client.FakeStoreProductResponseDto;
 import com.example.capstoneproject.dtos.ProductResponseDto;
 import com.example.capstoneproject.models.Product;
 import com.example.capstoneproject.services.ProductService;
@@ -11,7 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class ProductController {
@@ -26,7 +27,7 @@ public class ProductController {
 
     @GetMapping("/products/{id}")
     public ResponseEntity<ProductResponseDto> getProductById(@PathVariable int id) {
-       Product product =  productService.getProductById(id);
+        Product product = productService.getProductById(id);
         ProductResponseDto productResponseDto = new ProductResponseDto();
         if (product == null) {
             productResponseDto.setMessage("Product not found");
@@ -34,20 +35,20 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(productResponseDto);
         }
 
-       productResponseDto.setId(product.getId());
-       productResponseDto.setDescription(product.getDescription());
-       productResponseDto.setTitle(product.getTitle());
-       productResponseDto.setPrice(product.getPrice());
-       productResponseDto.setImageUrl(product.getImageUrl());
-       productResponseDto.setCategory(product.getCategory().getName());
+        productResponseDto.setId(product.getId());
+        productResponseDto.setDescription(product.getDescription());
+        productResponseDto.setTitle(product.getTitle());
+        productResponseDto.setPrice(product.getPrice());
+        productResponseDto.setImageUrl(product.getImageUrl());
+        productResponseDto.setCategory(product.getCategory().getName());
 
-       return ResponseEntity.ok(productResponseDto);
+        return ResponseEntity.ok(productResponseDto);
 
-       // return productResponseDto;
+        // return productResponseDto;
     }
 
     @PostMapping("/products")
-    public ResponseEntity<?> addProduct(@RequestBody FakeStoreProductDto requestBody){
+    public ResponseEntity<?> addProduct(@RequestBody FakeStoreProductResponseDto requestBody) {
 
         return productService.addProduct(requestBody);
 
@@ -72,12 +73,44 @@ public class ProductController {
     }
 
     @DeleteMapping("/products/{id}")
-    public ResponseEntity<ExternalApiResult<?>> deleteProductById(@PathVariable int id){
-       // Map<String, String> uriVariables = Map.of("id", String.valueOf(id), "isDeleted", "true");
+    public ResponseEntity<ExternalApiResult<?>> deleteProductById(@PathVariable int id) {
+        // Map<String, String> uriVariables = Map.of("id", String.valueOf(id), "isDeleted", "true");
 
         ExternalApiResult<?> result = productService.deleteProductById(id);
 
         return ResponseEntity.status(result.getStatus()).body(result);
 
     }
+
+    @GetMapping("/products")
+    public ResponseEntity<?> getAllProducts() {
+
+        ExternalApiResult<List<Product>> externalApiResult = productService.getAllProducts();
+
+        if (externalApiResult.getStatus() != HttpStatus.OK || externalApiResult.getBody() == null) {
+            return ResponseEntity.status(externalApiResult.getStatus()).body(externalApiResult.getBody());
+        }
+
+            List<Product> products = externalApiResult.getBody();
+
+            List<ProductResponseDto> productResponseDtos = new ArrayList<>();
+
+            for (Product product : products) {
+                ProductResponseDto dto = new ProductResponseDto();
+                dto.setId(product.getId());
+                dto.setTitle(product.getTitle());
+                dto.setDescription(product.getDescription());
+                dto.setPrice(product.getPrice());
+                dto.setImageUrl(product.getImageUrl());
+                dto.setCategory(product.getCategory().getName());
+
+                productResponseDtos.add(dto);
+            }
+
+            return ResponseEntity.status(externalApiResult.getStatus()).body(productResponseDtos);
+
+    }
+
+
+
 }
