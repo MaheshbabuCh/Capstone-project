@@ -4,6 +4,8 @@ import com.example.capstoneproject.dtos.ExternalApiResult;
 import com.example.capstoneproject.client.FakeStoreProductResponseDto;
 import com.example.capstoneproject.dtos.ProductRequestdto;
 import com.example.capstoneproject.dtos.ProductResponseDto;
+import com.example.capstoneproject.exceptions.BadRequestException;
+import com.example.capstoneproject.exceptions.NotFoundException;
 import com.example.capstoneproject.mappers.ProductMapper;
 import com.example.capstoneproject.models.Product;
 import com.example.capstoneproject.services.ProductService;
@@ -30,15 +32,15 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable int id) {
+    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable int id) throws NotFoundException {
         Product product = productService.getProductById(id);
         ProductResponseDto productResponseDto = new ProductResponseDto();
         if (product == null) {
-            productResponseDto.setMessage("Product not found");
+            /*productResponseDto.setMessage("Product not found");
             productResponseDto.setErrorCode(HttpStatus.NOT_FOUND.toString());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(productResponseDto);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(productResponseDto);*/
+            throw new NotFoundException("Product not found");
         }
-
         productResponseDto.setId(product.getId());
         productResponseDto.setDescription(product.getDescription());
         productResponseDto.setTitle(product.getTitle());
@@ -87,12 +89,13 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<?> getAllProducts() {
+    public ResponseEntity<List<ProductResponseDto>> getAllProducts() throws NotFoundException{
 
         ExternalApiResult<List<Product>> externalApiResult = productService.getAllProducts();
 
         if (externalApiResult.getStatus() != HttpStatus.OK || externalApiResult.getBody() == null) {
-            return ResponseEntity.status(externalApiResult.getStatus()).body(externalApiResult.getBody());
+          //  return ResponseEntity.status(externalApiResult.getStatus()).body(externalApiResult.getBody());
+            throw new NotFoundException("Products not found");
         }
 
             List<Product> products = externalApiResult.getBody();
@@ -100,26 +103,32 @@ public class ProductController {
 
             for (Product product : products) {
                 ProductResponseDto dto = productMapper.toProductResponseDtoFromProduct(product);
-                /*dto.setId(product.getId());
-                dto.setTitle(product.getTitle());
-                dto.setDescription(product.getDescription());
-                dto.setPrice(product.getPrice());
-                dto.setImageUrl(product.getImageUrl());
-                dto.setCategory(product.getCategory().getName());*/
                 productResponseDtos.add(dto);
             }
             return ResponseEntity.status(externalApiResult.getStatus()).body(productResponseDtos);
     }
 
     @PutMapping("/products/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable int id, @RequestBody ProductRequestdto productRequestdto) {
+    public ResponseEntity<?> updateProduct(@PathVariable int id, @RequestBody Product product) throws NotFoundException, BadRequestException {
 
-        ExternalApiResult<Product> externalApiResult =  productService.updateProduct(id, productRequestdto);
+       /* ExternalApiResult<Product> externalApiResult =  productService.updateProduct(id, productRequestdto);
         if(externalApiResult.getStatus() != HttpStatus.OK || externalApiResult.getBody() == null) {
-            return ResponseEntity.status(externalApiResult.getStatus()).body(externalApiResult.getBody());
+           // return ResponseEntity.status(externalApiResult.getStatus()).body(externalApiResult.getBody());
+            throw new NotFoundException("Product not found");
         }
         ProductResponseDto responseDto =  productMapper.toProductResponseDtoFromProduct(externalApiResult.getBody());
-        return ResponseEntity.status(externalApiResult.getStatus()).body(responseDto);
+        return ResponseEntity.status(externalApiResult.getStatus()).body(responseDto);*/
+
+        try {
+            Product updatedProduct = productService.updateProduct(id, product).getBody();
+            if (updatedProduct == null) {
+                throw new NotFoundException("Product not found");
+            }
+            ProductResponseDto responseDto = productMapper.toProductResponseDtoFromProduct(updatedProduct);
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
 
     }
 

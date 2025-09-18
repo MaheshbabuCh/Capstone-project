@@ -6,6 +6,7 @@ import com.example.capstoneproject.dtos.ProductRequestdto;
 import com.example.capstoneproject.dtos.ProductResponseDto;
 import com.example.capstoneproject.models.Category;
 import com.example.capstoneproject.models.Product;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +14,7 @@ public class ProductMapper {
 
     public FakeStoreProductRequestDto toFakeStoreProductRequestDto(ProductRequestdto productRequestdto) {
 
-// Only set fields if they exist in ProductRequestdto
+       // Only set fields if they exist in ProductRequestdto
         FakeStoreProductRequestDto fakeStoreProductRequestDto = new FakeStoreProductRequestDto();
 
         if (productRequestdto.getId() != null) {
@@ -28,28 +29,108 @@ public class ProductMapper {
         if (productRequestdto.getDescription() != null) {
             fakeStoreProductRequestDto.setDescription(productRequestdto.getDescription());
         }
-// Only set image if getImageUrl() exists and is not null
+
+        // Only set image if getImageUrl() exists and is not null
         if (productRequestdto.getImageUrl() != null) {
             fakeStoreProductRequestDto.setImage(productRequestdto.getImageUrl());
         }
         if (productRequestdto.getCategoryName() != null) {
             fakeStoreProductRequestDto.setCategory(productRequestdto.getCategoryName());
         }
+        return fakeStoreProductRequestDto;
+    }
 
+    public FakeStoreProductRequestDto FromProductToFakeStoreProductRequestDto(Product product) {
+
+        // Only set fields if they exist in ProductRequestdto
+        FakeStoreProductRequestDto fakeStoreProductRequestDto = new FakeStoreProductRequestDto();
+
+        if (product.getId() != 0) {
+            fakeStoreProductRequestDto.setId(product.getId());
+        }
+        if (product.getTitle() != null) {
+            fakeStoreProductRequestDto.setTitle(product.getTitle());
+        }
+        if (product.getPrice() != 0) {
+            fakeStoreProductRequestDto.setPrice(product.getPrice());
+        }
+        if (product.getDescription() != null) {
+            fakeStoreProductRequestDto.setDescription(product.getDescription());
+        }
+        // Only set image if getImageUrl() exists and is not null
+        if (product.getImageUrl() != null) {
+            fakeStoreProductRequestDto.setImage(product.getImageUrl());
+        }
+        if (product.getCategory() != null && product.getCategory().getName() != null) {
+            fakeStoreProductRequestDto.setCategory(product.getCategory().getName());
+        }
 
         return fakeStoreProductRequestDto;
     }
 
+    private static Product getProduct(ResponseEntity<FakeStoreProductResponseDto> fakeStoreProductResponseDto) {
+        Product product = new Product();
+
+        /*product.setId(Objects.requireNonNull(fakeStoreProductResponseDto.getBody()).getId());
+        product.setTitle(fakeStoreProductResponseDto.getBody().getTitle());
+        Category category = new Category();
+        category.setName(fakeStoreProductResponseDto.getBody().getCategory());
+        product.setCategory(category);
+        product.setPrice(fakeStoreProductResponseDto.getBody().getPrice());
+        product.setDescription(fakeStoreProductResponseDto.getBody().getDescription());
+        product.setImageUrl(fakeStoreProductResponseDto.getBody().getImage());*/
+
+        FakeStoreProductResponseDto body = fakeStoreProductResponseDto.getBody();
+        if (body != null) {
+            if (body.getId() != null) {
+                product.setId(body.getId());
+            }
+            if (body.getTitle() != null) {
+                product.setTitle(body.getTitle());
+            }
+            if (body.getCategory() != null) {
+                Category category = new Category();
+                category.setName(body.getCategory());
+                product.setCategory(category);
+            }
+            if (body.getPrice() != null) {
+                product.setPrice(body.getPrice());
+            }
+            if (body.getDescription() != null) {
+                product.setDescription(body.getDescription());
+            }
+            if (body.getImage() != null) {
+                product.setImageUrl(body.getImage());
+            }
+        }
+        return product;
+    }
+
     public Product toModelProduct(FakeStoreProductResponseDto fakeStoreProductResponseDto) {
         Product product = new Product();
-        product.setId(fakeStoreProductResponseDto.getId());
-        product.setTitle(fakeStoreProductResponseDto.getTitle());
-        product.setPrice(fakeStoreProductResponseDto.getPrice());
-        product.setDescription(fakeStoreProductResponseDto.getDescription());
-        product.setImageUrl(fakeStoreProductResponseDto.getImage());
+        if(fakeStoreProductResponseDto == null) {
+            return product; // or throw an exception if preferred
+        }
+        if(fakeStoreProductResponseDto.getId() != null) {
+            product.setId(fakeStoreProductResponseDto.getId());
+        }
+        if(fakeStoreProductResponseDto.getTitle() != null) {
+            product.setTitle(fakeStoreProductResponseDto.getTitle());
+        }
+        if(fakeStoreProductResponseDto.getPrice() != null) {
+            product.setPrice(fakeStoreProductResponseDto.getPrice());
+        }
+        if (fakeStoreProductResponseDto.getDescription() != null) {
+            product.setDescription(fakeStoreProductResponseDto.getDescription());
+        }
+        if(fakeStoreProductResponseDto.getImage() != null) {
+            product.setImageUrl(fakeStoreProductResponseDto.getImage());
+        }
         // Note: Category mapping is handled here, it should be done elsewhere
         Category category = new Category();
-        category.setName(fakeStoreProductResponseDto.getCategory());
+        if(fakeStoreProductResponseDto.getCategory() != null) {
+            category.setName(fakeStoreProductResponseDto.getCategory());
+        }
         product.setCategory(category);
         return product;
     }

@@ -3,6 +3,8 @@ package com.example.capstoneproject.services;
 import com.example.capstoneproject.dtos.ExternalApiResult;
 import com.example.capstoneproject.client.FakeStoreProductResponseDto;
 import com.example.capstoneproject.dtos.ProductRequestdto;
+import com.example.capstoneproject.exceptions.BadRequestException;
+import com.example.capstoneproject.exceptions.NotFoundException;
 import com.example.capstoneproject.models.Product;
 import org.springframework.http.ResponseEntity;
 
@@ -18,5 +20,5 @@ public interface ProductService {
 
      ExternalApiResult<List<Product>> getAllProducts();
 
-     ExternalApiResult<Product> updateProduct(int id, ProductRequestdto productRequestdto);
+     ExternalApiResult<Product> updateProduct(int id, Product product) throws BadRequestException, NotFoundException;
 }
