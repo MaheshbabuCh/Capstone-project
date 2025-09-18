@@ -44,7 +44,7 @@ A Spring Boot application for managing products, including CRUD operations and i
 - `DELETE /products/{id}` - Delete a product
 
 ## Project Structure
-
+- `client/` - Client api handling
 - `controllers/` - REST controllers
 - `services/` - Business logic
 - `models/` - Entity classes
@@ -52,4 +52,3 @@ A Spring Boot application for managing products, including CRUD operations and i
 - `exceptions/` - Custom exception classes
 
 ```
-Replace or expand sections as needed for your specific implementation.
