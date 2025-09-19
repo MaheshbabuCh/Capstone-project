@@ -1,8 +1,5 @@
 package com.example.capstoneproject.client;
 
-import com.example.capstoneproject.dtos.ExternalApiResult;
-import com.example.capstoneproject.exceptions.BadRequestException;
-import com.example.capstoneproject.exceptions.NotFoundException;
 import com.example.capstoneproject.mappers.ProductMapper;
 import com.example.capstoneproject.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +7,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
 
 @Component
 public class FakeStoreApi {
@@ -66,7 +61,7 @@ public class FakeStoreApi {
         return restTemplate.exchange(
                 url,
                 org.springframework.http.HttpMethod.PUT,
-                new org.springframework.http.HttpEntity<>(productMapper.FromProductToFakeStoreProductRequestDto(product)),
+                new org.springframework.http.HttpEntity<>(productMapper.fromProductToFakeStoreProductRequestDto(product)),
                 FakeStoreProductResponseDto.class
         );
     }

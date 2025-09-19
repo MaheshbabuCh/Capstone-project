@@ -2,12 +2,13 @@ package com.example.capstoneproject.controllers;
 
 import com.example.capstoneproject.dtos.ExternalApiResult;
 import com.example.capstoneproject.client.FakeStoreProductResponseDto;
-import com.example.capstoneproject.dtos.ProductRequestdto;
 import com.example.capstoneproject.dtos.ProductResponseDto;
 import com.example.capstoneproject.exceptions.BadRequestException;
 import com.example.capstoneproject.exceptions.NotFoundException;
 import com.example.capstoneproject.mappers.ProductMapper;
+import com.example.capstoneproject.models.Category;
 import com.example.capstoneproject.models.Product;
+import com.example.capstoneproject.repositories.ProductRepository;
 import com.example.capstoneproject.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +24,14 @@ public class ProductController {
 
     private final ProductMapper productMapper;
     ProductService productService;
+    ProductRepository productRepository;
 
 
     @Autowired
-    public ProductController(ProductService productService, ProductMapper productMapper) {
+    public ProductController(ProductService productService, ProductMapper productMapper, ProductRepository productRepository) {
         this.productService = productService;
         this.productMapper = productMapper;
+        this.productRepository = productRepository;
     }
 
     @GetMapping("/products/{id}")
@@ -56,7 +59,25 @@ public class ProductController {
     @PostMapping("/products")
     public ResponseEntity<?> addProduct(@RequestBody FakeStoreProductResponseDto requestBody) {
 
-        return productService.addProduct(requestBody);
+        Product product = new Product();
+        product.setDescription(requestBody.getDescription());
+        product.setTitle(requestBody.getTitle());
+        product.setPrice(requestBody.getPrice());
+        product.setImageUrl(requestBody.getImage());
+        // Assuming Category is another entity, you might need to fetch it from DB or create a new one
+        // Here, we're just creating a new Category for demonstration purposes
+//        Category category = new Category();
+//        category.setName(requestBody.getCategory());
+//        product.setCategory(category);
+
+        Product savedProduct = productRepository.save(product);
+
+        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+
+
+
+
+        //return productService.addProduct(requestBody);
 
         /* ResponseEntity<Product> responseProductEntity = productService.addProduct(requestBody);
         ProductResponseDto productResponseDto = new ProductResponseDto();
@@ -102,7 +123,7 @@ public class ProductController {
             List<ProductResponseDto> productResponseDtos = new ArrayList<>();
 
             for (Product product : products) {
-                ProductResponseDto dto = productMapper.toProductResponseDtoFromProduct(product);
+                ProductResponseDto dto = productMapper.fromProductToProductResponseDto(product);
                 productResponseDtos.add(dto);
             }
             return ResponseEntity.status(externalApiResult.getStatus()).body(productResponseDtos);
@@ -124,7 +145,7 @@ public class ProductController {
             if (updatedProduct == null) {
                 throw new NotFoundException("Product not found");
             }
-            ProductResponseDto responseDto = productMapper.toProductResponseDtoFromProduct(updatedProduct);
+            ProductResponseDto responseDto = productMapper.fromProductToProductResponseDto(updatedProduct);
             return ResponseEntity.ok(responseDto);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());

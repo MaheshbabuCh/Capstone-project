@@ -1,5 +1,8 @@
 package com.example.capstoneproject.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.el.stream.Stream;
@@ -7,9 +10,12 @@ import org.apache.el.stream.Stream;
 import java.util.List;
 @Getter
 @Setter
+@Entity
 public class Category extends BaseAudit{
+
     private String name;
     private String description;
+    @OneToMany(mappedBy = "category")
     private List<Product> products;
 
     public String getName() {

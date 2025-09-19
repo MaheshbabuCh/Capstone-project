@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductMapper {
 
-    public FakeStoreProductRequestDto toFakeStoreProductRequestDto(ProductRequestdto productRequestdto) {
+    public FakeStoreProductRequestDto fromProductRequestdtoToFakeStoreProductRequestDto(ProductRequestdto productRequestdto) {
 
        // Only set fields if they exist in ProductRequestdto
         FakeStoreProductRequestDto fakeStoreProductRequestDto = new FakeStoreProductRequestDto();
@@ -40,7 +40,7 @@ public class ProductMapper {
         return fakeStoreProductRequestDto;
     }
 
-    public FakeStoreProductRequestDto FromProductToFakeStoreProductRequestDto(Product product) {
+    public FakeStoreProductRequestDto fromProductToFakeStoreProductRequestDto(Product product) {
 
         // Only set fields if they exist in ProductRequestdto
         FakeStoreProductRequestDto fakeStoreProductRequestDto = new FakeStoreProductRequestDto();
@@ -106,7 +106,7 @@ public class ProductMapper {
         return product;
     }
 
-    public Product toModelProduct(FakeStoreProductResponseDto fakeStoreProductResponseDto) {
+    public Product fromFakeStoreProductResponseDtoToModelProduct(FakeStoreProductResponseDto fakeStoreProductResponseDto) {
         Product product = new Product();
         if(fakeStoreProductResponseDto == null) {
             return product; // or throw an exception if preferred
@@ -135,7 +135,7 @@ public class ProductMapper {
         return product;
     }
 
-    public ProductResponseDto toProductResponseDtoFromProduct(Product product) {
+    public ProductResponseDto fromProductToProductResponseDto(Product product) {
         ProductResponseDto dto = new ProductResponseDto();
         dto.setId(product.getId());
         dto.setTitle(product.getTitle());
@@ -148,6 +148,33 @@ public class ProductMapper {
             dto.setCategory(null); // or set a default value if needed
         }
         return dto;
+    }
+
+    public Product fromProductRequestdtoToModelProduct(ProductRequestdto productRequestdto) {
+        Product product = new Product();
+        if(productRequestdto == null) {
+            return product; // or throw an exception if preferred
+        }
+
+        if(productRequestdto.getName() != null) {
+            product.setTitle(productRequestdto.getName());
+        }
+        if(productRequestdto.getPrice() != null) {
+            product.setPrice(productRequestdto.getPrice());
+        }
+        if (productRequestdto.getDescription() != null) {
+            product.setDescription(productRequestdto.getDescription());
+        }
+        if(productRequestdto.getImageUrl() != null) {
+            product.setImageUrl(productRequestdto.getImageUrl());
+        }
+        // Note: Category mapping is handled here, it should be done elsewhere
+        Category category = new Category();
+        if(productRequestdto.getCategoryName() != null) {
+            category.setName(productRequestdto.getCategoryName());
+        }
+        product.setCategory(category);
+        return product;
     }
 
 }

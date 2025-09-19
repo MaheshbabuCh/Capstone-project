@@ -3,7 +3,6 @@ package com.example.capstoneproject.services;
 import com.example.capstoneproject.client.FakeStoreApi;
 import com.example.capstoneproject.dtos.ExternalApiResult;
 import com.example.capstoneproject.client.FakeStoreProductResponseDto;
-import com.example.capstoneproject.dtos.ProductRequestdto;
 import com.example.capstoneproject.exceptions.BadRequestException;
 import com.example.capstoneproject.exceptions.NotFoundException;
 import com.example.capstoneproject.mappers.ProductMapper;
@@ -18,8 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 @Service
 public class ProductServiceImplementation implements ProductService {
@@ -67,7 +64,7 @@ public class ProductServiceImplementation implements ProductService {
         if (responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody() != null) {
             List<Product> products = new ArrayList<>();
             for (FakeStoreProductResponseDto dto : responseEntity.getBody()) {
-                Product product = productMapper.toModelProduct(dto);
+                Product product = productMapper.fromFakeStoreProductResponseDtoToModelProduct(dto);
                 products.add(product);
             }
             return new ExternalApiResult<>(responseEntity.getStatusCode(), "Get all products", products);
@@ -88,7 +85,7 @@ public class ProductServiceImplementation implements ProductService {
         }
 
         if(responseEntity.getStatusCode() == HttpStatus.OK || responseEntity.getBody() != null){
-            Product product1 =  productMapper.toModelProduct(responseEntity.getBody());
+            Product product1 =  productMapper.fromFakeStoreProductResponseDtoToModelProduct(responseEntity.getBody());
             return new ExternalApiResult<>(responseEntity.getStatusCode(), "Product updated successfully", product1);
         }
 
