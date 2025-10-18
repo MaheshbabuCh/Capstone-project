@@ -14,7 +14,7 @@ import java.util.Date;
 public class BaseAudit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private Date createdAt;
     private Date lastUpdatedAt;

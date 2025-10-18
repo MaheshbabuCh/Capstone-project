@@ -1,9 +1,6 @@
 package com.example.capstoneproject.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +13,7 @@ public class Product extends BaseAudit{
     private float price;
     private String description;
     private String imageUrl;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Category category;
 
     public String getTitle() {
