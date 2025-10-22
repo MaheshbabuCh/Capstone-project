@@ -177,4 +177,24 @@ public class ProductMapper {
         return product;
     }
 
+    public Product copyDataFromIncomingProductToExistingProduct(Product incomingProduct, Product existingProduct) {
+        if (incomingProduct.getTitle() != null) {
+            existingProduct.setTitle(incomingProduct.getTitle());
+        }
+        if (incomingProduct.getPrice() != 0) {
+            existingProduct.setPrice(incomingProduct.getPrice());
+        }
+        if (incomingProduct.getDescription() != null) {
+            existingProduct.setDescription(incomingProduct.getDescription());
+        }
+        if (incomingProduct.getImageUrl() != null) {
+            existingProduct.setImageUrl(incomingProduct.getImageUrl());
+        }
+        if (incomingProduct.getCategory() != null && incomingProduct.getCategory().getName() != null) {
+            existingProduct.setCategory(incomingProduct.getCategory());
+        }
+
+        return existingProduct;
+    }
+
 }

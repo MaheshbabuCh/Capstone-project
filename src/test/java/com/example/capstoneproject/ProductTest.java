@@ -29,22 +29,19 @@ public class ProductTest {
     @Rollback(false)
     public  void createProduct(){
 
-for(int i=1;i<=5;i++) {
-    Product product = new Product();
-    // product.setId(1);
-    product.setTitle("Jewellery Product");
-    product.setPrice(99.99f);
-    product.setDescription("This is a beautiful product");
-    product.setImageUrl("http://example.com/image.jpg");
-    Category category = new Category();
-    // category.setId(1);
-    category.setName(" Jewellery");
-    category.setDescription("This is a jewellery category");
-    product.setCategory(category);
-    productRepository.save(product);
-}
-
-
-
+        for(int i=1;i<=5;i++) {
+            Product product = new Product();
+            // product.setId(1);
+            product.setTitle("Jewellery Product");
+            product.setPrice(99.99f);
+            product.setDescription("This is a beautiful product");
+            product.setImageUrl("http://example.com/image.jpg");
+            Category category = new Category();
+            // category.setId(1);
+            category.setName(" Jewellery");
+            category.setDescription("This is a jewellery category");
+            product.setCategory(category);
+            productRepository.save(product);
+        }
     }
 }

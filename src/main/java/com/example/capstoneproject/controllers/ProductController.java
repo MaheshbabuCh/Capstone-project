@@ -61,27 +61,27 @@ public class ProductController {
     @PostMapping("/products")
     public ResponseEntity<?> addProduct(@RequestBody FakeStoreProductResponseDto requestBody) {
 
-        Product product = new Product();
-        product.setDescription(requestBody.getDescription());
-        product.setTitle(requestBody.getTitle());
-        product.setPrice(requestBody.getPrice());
-        product.setImageUrl(requestBody.getImage());
-        // Assuming Category is another entity, you might need to fetch it from DB or create a new one
-        // Here, we're just creating a new Category for demonstration purposes
-//        Category category = new Category();
-//        category.setName(requestBody.getCategory());
-//        product.setCategory(category);
-
-        Product savedProduct = productRepository.save(product);
-
-        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+//        Product product = new Product();
+//        product.setDescription(requestBody.getDescription());
+//        product.setTitle(requestBody.getTitle());
+//        product.setPrice(requestBody.getPrice());
+//        product.setImageUrl(requestBody.getImage());
+//        // Assuming Category is another entity, you might need to fetch it from DB or create a new one
+//        // Here, we're just creating a new Category for demonstration purposes
+////        Category category = new Category();
+////        category.setName(requestBody.getCategory());
+////        product.setCategory(category);
+//
+//        Product savedProduct = productRepository.save(product);
+//
+//       return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
 
 
 
 
         //return productService.addProduct(requestBody);
 
-        /* ResponseEntity<Product> responseProductEntity = productService.addProduct(requestBody);
+        ResponseEntity<Product> responseProductEntity = productService.addProduct(requestBody);
         ProductResponseDto productResponseDto = new ProductResponseDto();
 
         if (responseProductEntity.getStatusCode().is2xxSuccessful() && responseProductEntity.getBody() != null) {
@@ -98,7 +98,7 @@ public class ProductController {
             productResponseDto.setMessage("Failed to add product");
             productResponseDto.setErrorCode(responseProductEntity.getStatusCode().toString());
             return ResponseEntity.status(responseProductEntity.getStatusCode()).body(productResponseDto);
-        } */
+        }
     }
 
     @DeleteMapping("/products/{id}")
