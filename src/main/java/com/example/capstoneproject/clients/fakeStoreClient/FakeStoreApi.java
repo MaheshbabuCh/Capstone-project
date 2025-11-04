@@ -1,4 +1,4 @@
-package com.example.capstoneproject.client;
+package com.example.capstoneproject.clients.fakeStoreClient;
 
 import com.example.capstoneproject.mappers.ProductMapper;
 import com.example.capstoneproject.models.Product;

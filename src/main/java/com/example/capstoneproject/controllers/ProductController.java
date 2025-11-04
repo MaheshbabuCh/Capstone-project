@@ -1,17 +1,18 @@
 package com.example.capstoneproject.controllers;
 
+import com.example.capstoneproject.clients.authenticationclient.AuthenticationClient;
 import com.example.capstoneproject.dtos.ExternalApiResult;
-import com.example.capstoneproject.client.FakeStoreProductResponseDto;
+import com.example.capstoneproject.clients.fakeStoreClient.FakeStoreProductResponseDto;
 import com.example.capstoneproject.dtos.ProductResponseDto;
 import com.example.capstoneproject.exceptions.BadRequestException;
+import com.example.capstoneproject.exceptions.InvalidSessionException;
 import com.example.capstoneproject.exceptions.NotFoundException;
 import com.example.capstoneproject.mappers.ProductMapper;
-import com.example.capstoneproject.models.Category;
 import com.example.capstoneproject.models.Product;
 import com.example.capstoneproject.repositories.ProductRepository;
 import com.example.capstoneproject.services.ProductService;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,14 +27,16 @@ public class ProductController {
     private final ProductMapper productMapper;
     ProductService productService;
     ProductRepository productRepository;
+    AuthenticationClient authenticationClient;
 
 
     @Autowired
     //@Qualifier("selfProductService")
-    public ProductController(ProductService productService, ProductMapper productMapper, ProductRepository productRepository) {
+    public ProductController(ProductService productService, ProductMapper productMapper, ProductRepository productRepository, AuthenticationClient authenticationClient) {
         this.productService = productService;
         this.productMapper = productMapper;
         this.productRepository = productRepository;
+        this.authenticationClient = authenticationClient;
     }
 
     @GetMapping("/products/{id}")
@@ -68,9 +71,9 @@ public class ProductController {
 //        product.setImageUrl(requestBody.getImage());
 //        // Assuming Category is another entity, you might need to fetch it from DB or create a new one
 //        // Here, we're just creating a new Category for demonstration purposes
-////        Category category = new Category();
-////        category.setName(requestBody.getCategory());
-////        product.setCategory(category);
+//        Category category = new Category();
+//        category.setName(requestBody.getCategory());
+//        product.setCategory(category);
 //
 //        Product savedProduct = productRepository.save(product);
 //
@@ -112,7 +115,19 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts() throws NotFoundException{
+    public ResponseEntity<List<ProductResponseDto>> getAllProducts(@Nullable @RequestHeader("AUTH_TOKEN") String token, @Nullable @RequestHeader("USER_ID") Long userId) throws Exception {
+
+        if(userId == null || token == null || token.isEmpty()){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+
+
+        boolean isSuccess =  authenticationClient.validate(userId, token);
+
+        if(!isSuccess){
+           throw new InvalidSessionException("Invalid session. Please log in again.");
+        }
 
         ExternalApiResult<List<Product>> externalApiResult = productService.getAllProducts();
 

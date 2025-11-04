@@ -1,6 +1,6 @@
 package com.example.capstoneproject.services;
 
-import com.example.capstoneproject.client.FakeStoreProductResponseDto;
+import com.example.capstoneproject.clients.fakeStoreClient.FakeStoreProductResponseDto;
 import com.example.capstoneproject.dtos.ExternalApiResult;
 import com.example.capstoneproject.exceptions.BadRequestException;
 import com.example.capstoneproject.exceptions.NotFoundException;
@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-@Primary
+
 @Service
 public class SelfProductServiceImplementation implements ProductService{
 

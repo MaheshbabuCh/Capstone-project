@@ -1,8 +1,8 @@
 package com.example.capstoneproject.services;
 
-import com.example.capstoneproject.client.FakeStoreApi;
+import com.example.capstoneproject.clients.fakeStoreClient.FakeStoreApi;
 import com.example.capstoneproject.dtos.ExternalApiResult;
-import com.example.capstoneproject.client.FakeStoreProductResponseDto;
+import com.example.capstoneproject.clients.fakeStoreClient.FakeStoreProductResponseDto;
 import com.example.capstoneproject.exceptions.BadRequestException;
 import com.example.capstoneproject.exceptions.NotFoundException;
 import com.example.capstoneproject.mappers.ProductMapper;
@@ -10,6 +10,7 @@ import com.example.capstoneproject.models.Category;
 import com.example.capstoneproject.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Primary
 public class ProductServiceImplementation implements ProductService {
 
     private final RestTemplateBuilder restTemplateBuilder;

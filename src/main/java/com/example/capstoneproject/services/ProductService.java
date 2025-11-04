@@ -1,8 +1,7 @@
 package com.example.capstoneproject.services;
 
 import com.example.capstoneproject.dtos.ExternalApiResult;
-import com.example.capstoneproject.client.FakeStoreProductResponseDto;
-import com.example.capstoneproject.dtos.ProductRequestdto;
+import com.example.capstoneproject.clients.fakeStoreClient.FakeStoreProductResponseDto;
 import com.example.capstoneproject.exceptions.BadRequestException;
 import com.example.capstoneproject.exceptions.NotFoundException;
 import com.example.capstoneproject.models.Product;

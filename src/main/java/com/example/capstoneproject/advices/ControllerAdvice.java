@@ -2,6 +2,7 @@ package com.example.capstoneproject.advices;
 
 import com.example.capstoneproject.dtos.ErrorDto;
 import com.example.capstoneproject.exceptions.BadRequestException;
+import com.example.capstoneproject.exceptions.InvalidSessionException;
 import com.example.capstoneproject.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,13 @@ public class ControllerAdvice {
         errorDto.setMessage(e.getMessage());
         errorDto.setErrorCode(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(errorDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidSessionException.class)
+    private ResponseEntity<ErrorDto> invalidSessionError(Exception e) {;
+        ErrorDto errorDto = new ErrorDto();
+        errorDto.setErrorCode(HttpStatus.UNAUTHORIZED);
+        errorDto.setMessage(e.getMessage());
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
     }
 }

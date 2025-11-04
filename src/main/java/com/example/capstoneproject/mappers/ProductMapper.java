@@ -1,7 +1,7 @@
 package com.example.capstoneproject.mappers;
 
-import com.example.capstoneproject.client.FakeStoreProductRequestDto;
-import com.example.capstoneproject.client.FakeStoreProductResponseDto;
+import com.example.capstoneproject.clients.fakeStoreClient.FakeStoreProductRequestDto;
+import com.example.capstoneproject.clients.fakeStoreClient.FakeStoreProductResponseDto;
 import com.example.capstoneproject.dtos.ProductRequestdto;
 import com.example.capstoneproject.dtos.ProductResponseDto;
 import com.example.capstoneproject.models.Category;
