@@ -117,7 +117,7 @@ public class ProductController {
     @GetMapping("/products")
     public ResponseEntity<List<ProductResponseDto>> getAllProducts(@Nullable @RequestHeader("AUTH_TOKEN") String token, @Nullable @RequestHeader("USER_ID") Long userId) throws Exception {
 
-        if(userId == null || token == null || token.isEmpty()){
+       /* if(userId == null || token == null || token.isEmpty()){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -127,7 +127,7 @@ public class ProductController {
 
         if(!isSuccess){
            throw new InvalidSessionException("Invalid session. Please log in again.");
-        }
+        } */
 
         ExternalApiResult<List<Product>> externalApiResult = productService.getAllProducts();
 
