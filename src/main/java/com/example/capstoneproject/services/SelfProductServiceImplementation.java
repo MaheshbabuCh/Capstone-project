@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Primary
 public class SelfProductServiceImplementation implements ProductService{
 
     ProductRepository productRepository;

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Primary
+//@Primary
 public class ProductServiceImplementation implements ProductService {
 
     private final RestTemplateBuilder restTemplateBuilder;
